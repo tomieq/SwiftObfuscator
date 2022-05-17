@@ -1,0 +1,59 @@
+#https://github.com/nicklockwood/SwiftFormat/blob/master/Rules.md
+--disable all
+
+# force using self
+--self "insert"
+--enable redundantSelf
+
+--enable andOperator,anyObjectProtocol,assertionFailures
+
+# blank lines around scope
+--enable blankLinesAtEndOfScope,blankLinesAtStartOfScope,blankLinesBetweenScopes
+# redundant blank lines
+--enable consecutiveBlankLines,blankLinesBetweenImports
+--trimwhitespace always
+--enable trailingSpace
+
+# format if statements
+--allman "false"
+--enable braces
+--elseposition "same-line"
+--guardelse "same-line"
+--enable elseOnSameLine
+--enable leadingDelimiters
+--enable redundantParens
+
+#duplicated spaces
+--enable consecutiveSpaces
+--enable spaceAroundBrackets
+--enable spaceAroundGenerics,spaceInsideGenerics
+
+--operatorfunc spaced
+--ranges no-space
+--enable spaceAroundOperators
+--enable spaceAroundComments,spaceInsideComments
+
+--enable spaceAroundParens,spaceInsideParens
+--enable spaceInsideBraces,spaceInsideBrackets
+
+# redundant error in catch
+--enable redundantLetError
+
+#indentation
+--indent 4
+--smarttabs enabled
+--indentcase false
+--ifdef no-indent
+--xcodeindentation disabled
+--indentstrings false
+--enable indent
+
+--enable yodaConditions
+
+#common mistakes
+--enable duplicateImports,redundantBreak,redundantLet
+#other
+--enable redundantNilInit
+--enable todos
+--commas inline
+--enable trailingCommas
