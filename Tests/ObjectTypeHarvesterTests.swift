@@ -65,7 +65,7 @@ class ObjectTypeHarvesterTests: XCTestCase {
         XCTAssertTrue(objectTypes.contains(ProjectObjectType(swiftObjectType: .class, name: "View")))
         XCTAssertTrue(objectTypes.contains(ProjectObjectType(swiftObjectType: .struct, name: "Title")))
     }
-    
+
     func testClassMethodTrap() {
         let content = """
             class User {

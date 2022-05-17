@@ -18,7 +18,7 @@ struct ProjectObjectType: Equatable {
     let name: String
 }
 
-class ObjectTypeHarvester {
+struct ObjectTypeHarvester {
     static func getObjectTypes(fileContent txt: String) -> [ProjectObjectType] {
         var foundObjectTypes: [ProjectObjectType] = []
         let range = NSRange(location: 0, length: txt.utf16.count)
