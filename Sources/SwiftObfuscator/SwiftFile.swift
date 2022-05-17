@@ -8,6 +8,6 @@
 import Foundation
 
 struct SwiftFile {
-    let filename: String
+    let filePath: String
     let content: String
 }

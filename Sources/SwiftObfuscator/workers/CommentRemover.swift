@@ -28,7 +28,7 @@ struct CommentRemover {
                 return line
             }
         let cleanContent = linesWithoutComment.joined(separator: "\n")
-        return SwiftFile(filename: file.filename, content: cleanContent)
+        return SwiftFile(filePath: file.filePath, content: cleanContent)
     }
 }
 
