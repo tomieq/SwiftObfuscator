@@ -25,7 +25,7 @@ class ObjectTypeHarvester {
 
         for type in SwiftObjectType.allCases {
             let rawType = type.rawValue
-            guard let regex = try? NSRegularExpression(pattern: "\\b\(rawType)\\s([a-zA-Z0-9_]+)") else {
+            guard let regex = try? NSRegularExpression(pattern: "\\b\(rawType)\\s[A-Z][a-zA-Z0-9_]+") else {
                 continue
             }
             for result in regex.matches(in: txt, options: [], range: range) {
