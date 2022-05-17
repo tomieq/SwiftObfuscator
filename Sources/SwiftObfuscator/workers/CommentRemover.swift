@@ -8,8 +8,8 @@
 import Foundation
 
 struct CommentRemover {
-    static func removeComments(_ file: SwiftFile) -> SwiftFile {
-        var content = file.content
+    static func removeComments(_ content: String) -> String {
+        var content = content
         while let openIndex = content.getFirstIndex(for: .openMultiline),
               let closeIndex = content.getFirstIndex(for: .closeMultiline) {
             content.removeSubrange(openIndex...closeIndex + 1)
@@ -27,8 +27,7 @@ struct CommentRemover {
                 }
                 return line
             }
-        let cleanContent = linesWithoutComment.joined(separator: "\n")
-        return SwiftFile(filePath: file.filePath, content: cleanContent)
+        return linesWithoutComment.joined(separator: "\n")
     }
 }
 

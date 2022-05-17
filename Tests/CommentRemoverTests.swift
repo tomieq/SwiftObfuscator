@@ -12,44 +12,32 @@ import XCTest
 class CommentRemoverTests: XCTestCase {
     func testRemoveOneSingleLineComment() {
         let content = "// file that has only comment"
-        let file = SwiftFile(filePath: "main.swift", content: content)
-        let cleanFile = CommentRemover.removeComments(file)
-        XCTAssertEqual(cleanFile.content, "")
+        XCTAssertEqual(CommentRemover.removeComments(content), "")
     }
 
     func testSingleLineCommentWithTabs() {
         let content = "     // file that has only comment"
-        let file = SwiftFile(filePath: "main.swift", content: content)
-        let cleanFile = CommentRemover.removeComments(file)
-        XCTAssertEqual(cleanFile.content, "")
+        XCTAssertEqual(CommentRemover.removeComments(content), "")
     }
 
     func testSingleLineCommentAfterCode() {
         let content = " var number = 21 // this should be removed"
-        let file = SwiftFile(filePath: "main.swift", content: content)
-        let cleanFile = CommentRemover.removeComments(file)
-        XCTAssertEqual(cleanFile.content, " var number = 21 ")
+        XCTAssertEqual(CommentRemover.removeComments(content), " var number = 21 ")
     }
 
     func testSingleLineCommentAtTheEndOfLine() {
         let content = " var number = 21 ///"
-        let file = SwiftFile(filePath: "main.swift", content: content)
-        let cleanFile = CommentRemover.removeComments(file)
-        XCTAssertEqual(cleanFile.content, " var number = 21 ")
+        XCTAssertEqual(CommentRemover.removeComments(content), " var number = 21 ")
     }
 
     func testSingleLineCommentInsideString() {
         let content = " var name = \"string with // slashes\""
-        let file = SwiftFile(filePath: "main.swift", content: content)
-        let cleanFile = CommentRemover.removeComments(file)
-        XCTAssertEqual(cleanFile.content, content)
+        XCTAssertEqual(CommentRemover.removeComments(content), content)
     }
 
     func testMultilineCommentInOneLine() {
         let content = "var number = 12/* This is comment */"
-        let file = SwiftFile(filePath: "main.swift", content: content)
-        let cleanFile = CommentRemover.removeComments(file)
-        XCTAssertEqual(cleanFile.content, "var number = 12")
+        XCTAssertEqual(CommentRemover.removeComments(content), "var number = 12")
     }
 
     func testMultilineCommentInManyLines() {
@@ -59,8 +47,6 @@ class CommentRemoverTests: XCTestCase {
         // nested one line comment
         */
         """
-        let file = SwiftFile(filePath: "main.swift", content: content)
-        let cleanFile = CommentRemover.removeComments(file)
-        XCTAssertEqual(cleanFile.content, "var number = 12")
+        XCTAssertEqual(CommentRemover.removeComments(content), "var number = 12")
     }
 }
