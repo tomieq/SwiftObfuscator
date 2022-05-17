@@ -26,11 +26,17 @@ struct CommentRemover {
     }
 
     static func removeComments(_ file: SwiftFile) -> SwiftFile {
-        let lines = file.content.components(separatedBy: .newlines)
+        var content = file.content
+        while let openIndex = Self.getCommentIndex(.openMultiline, in: content),
+              let closeIndex = Self.getCommentIndex(.closeMultiline, in: content) {
+            content.removeSubrange(openIndex...closeIndex + 1)
+        }
+        let lines = content.components(separatedBy: .newlines)
         let linesWithoutComment = lines
             .filter {
-                !$0.trimmingCharacters(in: .whitespaces)
+                $0.trimmingCharacters(in: .whitespaces)
                     .starts(with: "//")
+                    .not
             }
             .map { (line: String) -> String in
                 if let index = self.getCommentIndex(.singleLine, in: line) {
@@ -38,8 +44,8 @@ struct CommentRemover {
                 }
                 return line
             }
-        let content = linesWithoutComment.joined(separator: "\n")
-        return SwiftFile(filename: file.filename, content: content)
+        let cleanContent = linesWithoutComment.joined(separator: "\n")
+        return SwiftFile(filename: file.filename, content: cleanContent)
     }
 
     private static func getCommentIndex(_ type: CommentSign, in line: String) -> Int? {
