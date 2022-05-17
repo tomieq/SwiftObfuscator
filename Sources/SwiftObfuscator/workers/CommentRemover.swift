@@ -15,6 +15,12 @@ struct CommentRemover {
                 !$0.trimmingCharacters(in: .whitespaces)
                     .starts(with: "//")
             }
+            .map { (line: String) -> String in
+                if let index = line.in
+                    return "\(line[...index])"
+                }
+                return line
+            }
         let content = linesWithoutComment.joined(separator: "\n")
         return SwiftFile(filename: file.filename, content: content)
     }

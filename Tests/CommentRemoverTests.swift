@@ -23,4 +23,11 @@ class CommentRemoverTests: XCTestCase {
         let cleanFile = CommentRemover.removeComments(file)
         XCTAssertEqual(cleanFile.content, "")
     }
+    
+    func testSingleLineCommentAfterCode() {
+        let content = " var number = 21 // this should be removed"
+        let file = SwiftFile(filename: "main.swift", content: content)
+        let cleanFile = CommentRemover.removeComments(file)
+        XCTAssertEqual(cleanFile.content, " var number = 21")
+    }
 }
