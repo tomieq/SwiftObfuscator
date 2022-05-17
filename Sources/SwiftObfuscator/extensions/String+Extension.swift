@@ -13,3 +13,31 @@ extension String {
         self.removeSubrange(startIndex..<index(startIndex, offsetBy: range.count))
     }
 }
+
+extension String {
+    subscript(offset: Int) -> Character {
+        self[index(startIndex, offsetBy: offset)]
+    }
+
+    subscript(range: Range<Int>) -> String {
+        let startIndex = index(self.startIndex, offsetBy: range.lowerBound)
+        return String(self[startIndex..<index(startIndex, offsetBy: range.count)])
+    }
+
+    subscript(range: ClosedRange<Int>) -> String {
+        let startIndex = index(self.startIndex, offsetBy: range.lowerBound)
+        return String(self[startIndex..<index(startIndex, offsetBy: range.count)])
+    }
+
+    subscript(range: PartialRangeFrom<Int>) -> String {
+        String(self[index(startIndex, offsetBy: range.lowerBound)...])
+    }
+
+    subscript(range: PartialRangeThrough<Int>) -> String {
+        String(self[...index(startIndex, offsetBy: range.upperBound)])
+    }
+
+    subscript(range: PartialRangeUpTo<Int>) -> String {
+        String(self[..<index(startIndex, offsetBy: range.upperBound)])
+    }
+}

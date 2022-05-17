@@ -23,7 +23,7 @@ struct CommentRemover {
             }
             .map { (line: String) -> String in
                 if let index = line.getFirstIndex(for: .singleLine) {
-                    return "\(line[0...index - 1])"
+                    return line[0...index - 1]
                 }
                 return line
             }
