@@ -28,6 +28,20 @@ class CommentRemoverTests: XCTestCase {
         let content = " var number = 21 // this should be removed"
         let file = SwiftFile(filename: "main.swift", content: content)
         let cleanFile = CommentRemover.removeComments(file)
-        XCTAssertEqual(cleanFile.content, " var number = 21")
+        XCTAssertEqual(cleanFile.content, " var number = 21 ")
+    }
+    
+    func testSingleLineCommentAtTheEndOfLine() {
+        let content = " var number = 21 ///"
+        let file = SwiftFile(filename: "main.swift", content: content)
+        let cleanFile = CommentRemover.removeComments(file)
+        XCTAssertEqual(cleanFile.content, " var number = 21 ")
+    }
+    
+    func testSingleLineCommentInsideString() {
+        let content = " var name = \"string with // slashes\""
+        let file = SwiftFile(filename: "main.swift", content: content)
+        let cleanFile = CommentRemover.removeComments(file)
+        XCTAssertEqual(cleanFile.content, content)
     }
 }

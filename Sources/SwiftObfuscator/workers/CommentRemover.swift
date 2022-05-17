@@ -16,12 +16,24 @@ struct CommentRemover {
                     .starts(with: "//")
             }
             .map { (line: String) -> String in
-                if let index = line.in
-                    return "\(line[...index])"
+                if let index = self.getSingleLineCommentIndex(line) {
+                    return "\(line[0...index - 1])"
                 }
                 return line
             }
         let content = linesWithoutComment.joined(separator: "\n")
         return SwiftFile(filename: file.filename, content: content)
+    }
+
+    private static func getSingleLineCommentIndex(_ line: String) -> Int? {
+        var isInsideQuote = false
+        for (index, character) in line.enumerated() {
+            let nextIndex = index + 1
+            if character == "\"" { isInsideQuote.toggle() }
+            if character == "/", isInsideQuote.not, nextIndex < line.count, line[nextIndex] == "/" {
+                return index
+            }
+        }
+        return nil
     }
 }
