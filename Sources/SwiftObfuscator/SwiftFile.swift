@@ -7,7 +7,12 @@
 
 import Foundation
 
-struct SwiftFile {
+class SwiftFile {
     let filePath: String
-    let content: String
+    var content: String
+
+    init(filePath: String, content: String) {
+        self.filePath = filePath
+        self.content = content
+    }
 }
