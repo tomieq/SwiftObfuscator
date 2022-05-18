@@ -49,6 +49,14 @@ class Project {
         }
     }
 
+    func obfuscatePrivateMethods() {
+        for file in self.projectFiles.swiftFiles {
+            autoreleasepool {
+                PrivateMethodObfuscator.obfuscate(swiftFile: file)
+            }
+        }
+    }
+
     func overrideFiles() {
         self.projectFiles.swiftFiles.forEach { file in
             autoreleasepool {
