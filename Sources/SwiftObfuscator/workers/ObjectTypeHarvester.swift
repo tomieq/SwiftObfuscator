@@ -26,6 +26,10 @@ struct NamedType: Equatable, Hashable {
     let flavor: ObjectTypeFlavor
     let name: String
     let modifiers: [ObjectTypeModifier]
+
+    var isPublic: Bool {
+        self.modifiers.contains(.public)
+    }
 }
 
 struct ObjectTypeHarvester {
