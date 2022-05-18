@@ -14,9 +14,18 @@ enum ObjectTypeFlavor: String, CaseIterable {
     case `protocol`
 }
 
+enum ObjectTypeModifier: String, CaseIterable {
+    case final
+    case `public`
+    case `internal`
+    case `private`
+    case `fileprivate`
+}
+
 struct NamedType: Equatable, Hashable {
     let flavor: ObjectTypeFlavor
     let name: String
+    let modifiers: [ObjectTypeModifier]
 }
 
 struct ObjectTypeHarvester {
@@ -24,16 +33,21 @@ struct ObjectTypeHarvester {
         var foundTypes: [NamedType] = []
         let range = NSRange(location: 0, length: txt.utf16.count)
 
+        let modifiers = ObjectTypeModifier.allCases.map { $0.rawValue }.joined(separator: "|")
         for flavor in ObjectTypeFlavor.allCases {
             let flavorName = flavor.rawValue
-            guard let regex = try? NSRegularExpression(pattern: "\\b\(flavorName)\\s[A-Z][a-zA-Z0-9_]+") else {
+            let pattern = "(\(modifiers)|\\s)*\\s\(flavorName)\\s[A-Z][a-zA-Z0-9_]+"
+            guard let regex = try? NSRegularExpression(pattern: pattern) else {
                 continue
             }
             for result in regex.matches(in: txt, options: [], range: range) {
                 let matchingString = (txt as NSString).substring(with: result.range)
-                let nameRange = flavorName.count...matchingString.count - 1
-                let name = matchingString[nameRange].trimmingCharacters(in: .whitespaces)
-                foundTypes.append(NamedType(flavor: flavor, name: name))
+                let splitted = matchingString.components(separatedBy: flavorName)
+                let usedMofifiers = splitted[0]
+                    .components(separatedBy: .whitespaces)
+                    .compactMap { ObjectTypeModifier(rawValue: $0) }
+                let name = splitted[1].trimmingCharacters(in: .whitespaces)
+                foundTypes.append(NamedType(flavor: flavor, name: name, modifiers: usedMofifiers))
             }
         }
 

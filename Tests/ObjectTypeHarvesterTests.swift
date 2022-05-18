@@ -12,7 +12,7 @@ import XCTest
 class ObjectTypeHarvesterTests: XCTestCase {
     func testFindClassDefinition() {
         let content = """
-            class User: Human {}
+            public final a class User: Human {}
             class Dog {}
         """
         let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
@@ -73,9 +73,9 @@ class ObjectTypeHarvesterTests: XCTestCase {
         """
         let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
         XCTAssertEqual(objectTypes.count, 3)
-        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .enum, name: "Alignment")))
-        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .class, name: "View")))
-        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .struct, name: "Title")))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .enum, name: "Alignment", modifiers: [])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .class, name: "View", modifiers: [])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .struct, name: "Title", modifiers: [])))
     }
 
     func testClassMethodTrap() {
@@ -86,5 +86,103 @@ class ObjectTypeHarvesterTests: XCTestCase {
         """
         let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
         XCTAssertEqual(objectTypes.count, 1)
+    }
+
+    func testFinalModifier() {
+        let content = """
+            final class Obfuscator {
+                var files: Files
+            }
+        """
+        let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
+        XCTAssertEqual(objectTypes.count, 1)
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .class, name: "Obfuscator", modifiers: [.final])))
+    }
+
+    func testPublicModifier() {
+        let content = """
+            public class API {
+                var files: Files
+            }
+            public struct Constants {
+                let width = 80
+            }
+            public protocol APIService {
+                func load()
+            }
+            public enum Env {
+                case prod
+                case uat
+            }
+        """
+        let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
+        XCTAssertEqual(objectTypes.count, 4)
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .class, name: "API", modifiers: [.public])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .struct, name: "Constants", modifiers: [.public])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .protocol, name: "APIService", modifiers: [.public])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .enum, name: "Env", modifiers: [.public])))
+    }
+
+    func testPrivateModifier() {
+        let content = """
+            private class API {
+                var files: Files
+            }
+            private struct Constants {
+                let width = 80
+            }
+            private protocol APIService {
+                func load()
+            }
+            private enum Env {
+                case prod
+                case uat
+            }
+        """
+        let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
+        XCTAssertEqual(objectTypes.count, 4)
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .class, name: "API", modifiers: [.private])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .struct, name: "Constants", modifiers: [.private])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .protocol, name: "APIService", modifiers: [.private])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .enum, name: "Env", modifiers: [.private])))
+    }
+
+    func testFilePrivateModifier() {
+        let content = """
+            fileprivate class API {
+                var files: Files
+            }
+            fileprivate struct Constants {
+                let width = 80
+            }
+            fileprivate protocol APIService {
+                func load()
+            }
+            fileprivate enum Env {
+                case prod
+                case uat
+            }
+        """
+        let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
+        XCTAssertEqual(objectTypes.count, 4)
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .class, name: "API", modifiers: [.fileprivate])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .struct, name: "Constants", modifiers: [.fileprivate])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .protocol, name: "APIService", modifiers: [.fileprivate])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .enum, name: "Env", modifiers: [.fileprivate])))
+    }
+
+    func testMultipleModifiers() {
+        let content = """
+            final public class API {
+                var files: Files
+            }
+            public final class URLFetcher {
+                func fetch()
+            }
+        """
+        let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
+        XCTAssertEqual(objectTypes.count, 2)
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .class, name: "API", modifiers: [.final, .public])))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .class, name: "URLFetcher", modifiers: [.public, .final])))
     }
 }
