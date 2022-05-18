@@ -12,9 +12,7 @@ struct ObjectTypeReplacer {
         guard let regex = try? NSRegularExpression(pattern: "\\b\(type.name)\\b") else {
             return fileContent
         }
-        let mutableString = NSMutableString(string: fileContent)
         let range = NSRange(location: 0, length: fileContent.utf16.count)
-        regex.replaceMatches(in: mutableString, options: [], range: range, withTemplate: name)
-        return mutableString as String
+        return regex.stringByReplacingMatches(in: fileContent, options: [], range: range, withTemplate: name)
     }
 }
