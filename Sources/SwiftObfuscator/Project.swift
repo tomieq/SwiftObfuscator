@@ -66,17 +66,12 @@ class Project {
 
     private func randomName() -> String {
         let getNextName: () -> String = {
-            "MemorySpace0x\(self.randomHexDigits(length: 12))"
+            "MemorySpace0x".appendingRandomHexDigits(length: 12)
         }
         var name = getNextName()
         while self.mapping.values.contains(name) {
             name = getNextName()
         }
         return name
-    }
-
-    private func randomHexDigits(length: Int) -> String {
-      let letters = "abcdef0123456789"
-      return String((0..<length).map{ _ in letters.randomElement()! })
     }
 }

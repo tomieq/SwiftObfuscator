@@ -41,3 +41,11 @@ extension String {
         String(self[..<index(startIndex, offsetBy: range.upperBound)])
     }
 }
+
+extension String {
+    func appendingRandomHexDigits(length: Int) -> String {
+        let letters = "abcdef0123456789"
+        let digits = String((0..<length).map{ _ in letters.randomElement()! })
+        return self.appending(digits)
+    }
+}
