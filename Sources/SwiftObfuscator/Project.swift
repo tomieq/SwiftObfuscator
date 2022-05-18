@@ -18,7 +18,7 @@ class Project {
     }
 
     func removeComments() {
-        self.projectFiles.swiftFiles.forEach { file in
+        for file in self.projectFiles.swiftFiles {
             autoreleasepool {
                 file.content = CommentRemover.removeComments(file.content)
             }
@@ -26,7 +26,7 @@ class Project {
     }
 
     func obfuscateObjectTypeNames(untouchableTypeNames: [String]) {
-        self.projectFiles.swiftFiles.forEach { file in
+        for file in self.projectFiles.swiftFiles {
             autoreleasepool {
                 let types = ObjectTypeHarvester.getObjectTypes(fileContent: file.content)
                 for type in types {
@@ -61,17 +61,22 @@ class Project {
     }
 
     private func makeObjectTypeName(_ name: String) -> String {
-        "T" + self.randomName()
+        self.randomName()
     }
 
     private func randomName() -> String {
         let getNextName: () -> String = {
-            UUID().uuidString.components(separatedBy: "-")[0]
+            "MemorySpace0x\(self.randomHexDigits(length: 12))"
         }
         var name = getNextName()
         while self.mapping.values.contains(name) {
             name = getNextName()
         }
         return name
+    }
+
+    private func randomHexDigits(length: Int) -> String {
+      let letters = "abcdef0123456789"
+      return String((0..<length).map{ _ in letters.randomElement()! })
     }
 }
