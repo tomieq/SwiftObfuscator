@@ -44,9 +44,9 @@ struct ObjectTypeHarvester {
                 let matchingString = (txt as NSString).substring(with: result.range)
                 let splitted = matchingString.components(separatedBy: flavorName)
                 let usedMofifiers = splitted[0]
-                    .components(separatedBy: .whitespaces)
+                    .components(separatedBy: .whitespacesAndNewlines)
                     .compactMap { ObjectTypeModifier(rawValue: $0) }
-                let name = splitted[1].trimmingCharacters(in: .whitespaces)
+                let name = splitted[1].trimmingCharacters(in: .whitespacesAndNewlines)
                 foundTypes.append(NamedType(flavor: flavor, name: name, modifiers: usedMofifiers))
             }
         }
