@@ -49,7 +49,7 @@ struct PrivateMethodObfuscator {
                     continue
                 }
                 let range = NSRange(location: 0, length: swiftFile.content.utf16.count)
-                swiftFile.content = regex.stringByReplacingMatches(in: swiftFile.content, options: [], range: range, withTemplate: rule.replacement)
+                swiftFile.content = regex.stringByReplacingMatches(in: swiftFile.content, range: range, withTemplate: rule.replacement)
             }
         }
     }
