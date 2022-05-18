@@ -30,13 +30,16 @@ class Project {
             autoreleasepool {
                 let types = ObjectTypeHarvester.getObjectTypes(fileContent: file.content)
                 for type in types {
-                    if self.mapping.keys.contains(type).not, untouchableTypeNames.contains(type.name).not {
+                    if type.isPublic.not,
+                       self.mapping.keys.contains(type).not,
+                       untouchableTypeNames.contains(type.name).not {
                         let replacement = self.makeObjectTypeName(type.name)
                         mapping[type] = replacement
                     }
                 }
             }
         }
+
         self.projectFiles.swiftFiles.forEach { file in
             autoreleasepool {
                 for (type, value) in mapping {
@@ -58,10 +61,7 @@ class Project {
     }
 
     private func makeObjectTypeName(_ name: String) -> String {
-        if name.starts(with: "_") {
-            return "_T" + self.randomName()
-        }
-        return "T" + self.randomName()
+        "T" + self.randomName()
     }
 
     private func randomName() -> String {
