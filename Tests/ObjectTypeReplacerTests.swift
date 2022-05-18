@@ -12,7 +12,7 @@ import XCTest
 class ObjectTypeReplacerTests: XCTestCase {
     func testSimpleClassName() {
         let content = "final class User {}"
-        let type = ProjectObjectType(swiftObjectType: .class, name: "User")
+        let type = NamedType(flavor: .class, name: "User")
         let replaced = ObjectTypeReplacer.replace(type, with: "Object1", in: content)
         XCTAssertEqual(replaced, "final class Object1 {}")
     }
@@ -22,7 +22,7 @@ class ObjectTypeReplacerTests: XCTestCase {
             final class User {}
             class UserData {}
         """
-        let type = ProjectObjectType(swiftObjectType: .class, name: "User")
+        let type = NamedType(flavor: .class, name: "User")
         let replaced = ObjectTypeReplacer.replace(type, with: "Object1", in: content)
 
         let expected = """

@@ -8,7 +8,7 @@
 import Foundation
 
 struct ObjectTypeReplacer {
-    static func replace(_ type: ProjectObjectType, with name: String, in fileContent: String) -> String {
+    static func replace(_ type: NamedType, with name: String, in fileContent: String) -> String {
         guard let regex = try? NSRegularExpression(pattern: "\\b\(type.name)\\b") else {
             return fileContent
         }

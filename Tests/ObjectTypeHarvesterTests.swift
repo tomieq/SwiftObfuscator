@@ -16,9 +16,9 @@ class ObjectTypeHarvesterTests: XCTestCase {
             class Dog {}
         """
         let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
-        XCTAssertEqual(objectTypes[safeIndex: 0]?.swiftObjectType, .class)
+        XCTAssertEqual(objectTypes[safeIndex: 0]?.flavor, .class)
         XCTAssertEqual(objectTypes[safeIndex: 0]?.name, "User")
-        XCTAssertEqual(objectTypes[safeIndex: 1]?.swiftObjectType, .class)
+        XCTAssertEqual(objectTypes[safeIndex: 1]?.flavor, .class)
         XCTAssertEqual(objectTypes[safeIndex: 1]?.name, "Dog")
     }
 
@@ -28,9 +28,9 @@ class ObjectTypeHarvesterTests: XCTestCase {
             struct DefaultKeys {}
         """
         let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
-        XCTAssertEqual(objectTypes[safeIndex: 0]?.swiftObjectType, .struct)
+        XCTAssertEqual(objectTypes[safeIndex: 0]?.flavor, .struct)
         XCTAssertEqual(objectTypes[safeIndex: 0]?.name, "Profile")
-        XCTAssertEqual(objectTypes[safeIndex: 1]?.swiftObjectType, .struct)
+        XCTAssertEqual(objectTypes[safeIndex: 1]?.flavor, .struct)
         XCTAssertEqual(objectTypes[safeIndex: 1]?.name, "DefaultKeys")
     }
 
@@ -40,9 +40,9 @@ class ObjectTypeHarvesterTests: XCTestCase {
             protocol Equatable {}
         """
         let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
-        XCTAssertEqual(objectTypes[safeIndex: 0]?.swiftObjectType, .protocol)
+        XCTAssertEqual(objectTypes[safeIndex: 0]?.flavor, .protocol)
         XCTAssertEqual(objectTypes[safeIndex: 0]?.name, "CaseIterable")
-        XCTAssertEqual(objectTypes[safeIndex: 1]?.swiftObjectType, .protocol)
+        XCTAssertEqual(objectTypes[safeIndex: 1]?.flavor, .protocol)
         XCTAssertEqual(objectTypes[safeIndex: 1]?.name, "Equatable")
     }
 
@@ -54,7 +54,7 @@ class ObjectTypeHarvesterTests: XCTestCase {
             }
         """
         let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
-        XCTAssertEqual(objectTypes[safeIndex: 0]?.swiftObjectType, .enum)
+        XCTAssertEqual(objectTypes[safeIndex: 0]?.flavor, .enum)
         XCTAssertEqual(objectTypes[safeIndex: 0]?.name, "Size")
     }
 
@@ -73,9 +73,9 @@ class ObjectTypeHarvesterTests: XCTestCase {
         """
         let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
         XCTAssertEqual(objectTypes.count, 3)
-        XCTAssertTrue(objectTypes.contains(ProjectObjectType(swiftObjectType: .enum, name: "Alignment")))
-        XCTAssertTrue(objectTypes.contains(ProjectObjectType(swiftObjectType: .class, name: "View")))
-        XCTAssertTrue(objectTypes.contains(ProjectObjectType(swiftObjectType: .struct, name: "Title")))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .enum, name: "Alignment")))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .class, name: "View")))
+        XCTAssertTrue(objectTypes.contains(NamedType(flavor: .struct, name: "Title")))
     }
 
     func testClassMethodTrap() {
