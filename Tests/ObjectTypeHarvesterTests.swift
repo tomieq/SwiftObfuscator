@@ -34,6 +34,18 @@ class ObjectTypeHarvesterTests: XCTestCase {
         XCTAssertEqual(objectTypes[safeIndex: 1]?.name, "DefaultKeys")
     }
 
+    func testFindProtocolDefinition() {
+        let content = """
+            protocol CaseIterable {}
+            protocol Equatable {}
+        """
+        let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
+        XCTAssertEqual(objectTypes[safeIndex: 0]?.swiftObjectType, .protocol)
+        XCTAssertEqual(objectTypes[safeIndex: 0]?.name, "CaseIterable")
+        XCTAssertEqual(objectTypes[safeIndex: 1]?.swiftObjectType, .protocol)
+        XCTAssertEqual(objectTypes[safeIndex: 1]?.name, "Equatable")
+    }
+
     func testFindEnumDefinition() {
         let content = """
             enum Size {

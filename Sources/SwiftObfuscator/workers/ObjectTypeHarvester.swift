@@ -11,9 +11,10 @@ enum SwiftObjectType: String, CaseIterable {
     case `class`
     case `enum`
     case `struct`
+    case `protocol`
 }
 
-struct ProjectObjectType: Equatable {
+struct ProjectObjectType: Equatable, Hashable {
     let swiftObjectType: SwiftObjectType
     let name: String
 }
