@@ -49,6 +49,14 @@ class Project {
         }
     }
 
+    func obfuscatePrivateAttributes() {
+        for file in self.projectFiles.swiftFiles {
+            autoreleasepool {
+                PrivateAttributeObfuscator.obfuscate(swiftFile: file)
+            }
+        }
+    }
+
     func obfuscatePrivateMethods() {
         for file in self.projectFiles.swiftFiles {
             autoreleasepool {
