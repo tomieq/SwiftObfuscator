@@ -17,7 +17,7 @@ struct PrivateVariable: Hashable {
     let name: String
 }
 
-struct PrivateAttributeObfuscator {
+enum PrivateAttributeObfuscator {
     static func obfuscate(swiftFile: SwiftFile) {
         let txt = swiftFile.content
         let range = NSRange(location: 0, length: txt.utf16.count)

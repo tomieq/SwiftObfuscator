@@ -17,7 +17,7 @@ class ProjectFiles {
     }
 }
 
-struct ProjectFileLoader {
+enum ProjectFileLoader {
     static func loadFiles(from absolutePath: String) -> ProjectFiles {
         let filePaths = (try? FileManager.default.subpathsOfDirectory(atPath: absolutePath)) ?? []
 

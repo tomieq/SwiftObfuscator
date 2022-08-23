@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CommentRemover {
+enum CommentRemover {
     static func removeComments(_ content: String) -> String {
         var content = content
         while let openIndex = content.getFirstIndex(for: .openMultiline),

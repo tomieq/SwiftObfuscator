@@ -7,17 +7,17 @@
 
 import Foundation
 
-class Project {
+public class Project {
     let absolutePath: String
     let projectFiles: ProjectFiles
     private(set) var mapping: [NamedType: String] = [:]
 
-    init(absolutePath: String) {
+    public init(absolutePath: String) {
         self.absolutePath = absolutePath
         self.projectFiles = ProjectFileLoader.loadFiles(from: absolutePath)
     }
 
-    func removeComments() {
+    public func removeComments() {
         for file in self.projectFiles.swiftFiles {
             autoreleasepool {
                 file.content = CommentRemover.removeComments(file.content)
@@ -25,7 +25,7 @@ class Project {
         }
     }
 
-    func obfuscateObjectTypeNames(untouchableTypeNames: [String]) {
+    public func obfuscateObjectTypeNames(untouchableTypeNames: [String]) {
         for file in self.projectFiles.swiftFiles {
             autoreleasepool {
                 let types = ObjectTypeHarvester.getObjectTypes(fileContent: file.content)
@@ -49,7 +49,7 @@ class Project {
         }
     }
 
-    func obfuscatePrivateAttributes() {
+    public func obfuscatePrivateAttributes() {
         for file in self.projectFiles.swiftFiles {
             autoreleasepool {
                 PrivateAttributeObfuscator.obfuscate(swiftFile: file)
@@ -57,7 +57,7 @@ class Project {
         }
     }
 
-    func obfuscatePrivateMethods() {
+    public func obfuscatePrivateMethods() {
         for file in self.projectFiles.swiftFiles {
             autoreleasepool {
                 PrivateMethodObfuscator.obfuscate(swiftFile: file)
@@ -65,7 +65,7 @@ class Project {
         }
     }
 
-    func overrideFiles() {
+    public func overrideFiles() {
         self.projectFiles.swiftFiles.forEach { file in
             autoreleasepool {
                 let newPath = self.absolutePath + "/" + file.filePath

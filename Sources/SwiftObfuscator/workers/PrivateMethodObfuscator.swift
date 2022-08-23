@@ -12,7 +12,7 @@ struct PrivateMethod: Hashable {
     let name: String
 }
 
-struct PrivateMethodObfuscator {
+enum PrivateMethodObfuscator {
     static func obfuscate(swiftFile: SwiftFile) {
         var mapping: [PrivateMethod: String] = [:]
 
