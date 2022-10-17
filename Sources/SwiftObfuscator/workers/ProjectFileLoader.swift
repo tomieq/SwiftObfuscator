@@ -18,6 +18,7 @@ class ProjectFiles {
 }
 
 enum ProjectFileLoader {
+    private static let logTag = "🐣 ProjectFileLoader"
     static func loadFiles(from absolutePath: String) -> ProjectFiles {
         let filePaths = (try? FileManager.default.subpathsOfDirectory(atPath: absolutePath)) ?? []
 
@@ -27,11 +28,12 @@ enum ProjectFileLoader {
             .compactMap { (filePath: String) -> SwiftFile? in
                 let absoluteFilePath = "\(absolutePath)/\(filePath)"
                 guard let content = try? String(contentsOfFile: absoluteFilePath) else {
-                    print("Could not read content of \(filePath)")
+                    Logger.e(Self.logTag, "Could not read content of \(filePath)")
                     return nil
                 }
                 return SwiftFile(filePath: filePath, content: content)
             }
+        Logger.v(self.logTag, "Loaded \(projectFiles.swiftFiles.count) swift files")
         return projectFiles
     }
 }

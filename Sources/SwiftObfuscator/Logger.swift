@@ -1,6 +1,6 @@
 //
 //  Logger.swift
-//  
+//
 //
 //  Created by Tomasz KUCHARSKI on 17/10/2022.
 //
@@ -23,7 +23,7 @@ struct Logger {
         let localMessage = "\(Self.logDate()) [Obfuscator][\(label)] \(log)"
         print(localMessage)
     }
-    
+
     private static func logDate() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
