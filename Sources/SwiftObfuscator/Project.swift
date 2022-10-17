@@ -32,13 +32,14 @@ public class Project {
     }
 
     public func addExcludedPath(_ path: String) {
+        let path = path.trimmingCharacters(in: CharacterSet(charactersIn: "/")) + "/"
         self.excludedFilePaths.append(path)
         Logger.v(self.logTag, "Added exclusion path: \(path)")
     }
 
     private func isFileExcluded(filePath: String) -> Bool {
         for excludedPath in self.excludedFilePaths {
-            if filePath.contains(excludedPath) {
+            if filePath.hasPrefix(excludedPath) {
                 return true
             }
         }
