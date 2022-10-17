@@ -19,7 +19,7 @@ struct PrivateVariable: Hashable {
 
 class PrivateAttributeObfuscator {
     let generateName: (String) -> String
-    
+
     init(generateName: @escaping (String) -> String) {
         self.generateName = generateName
     }
@@ -51,7 +51,8 @@ class PrivateAttributeObfuscator {
         }
         for (variable, newName) in mapping {
             let rules: [(pattern: String, replacement: String)] = [
-                ("\\b\(variable.type.rawValue)\\s\(variable.name)\\b", "\(variable.type.rawValue) \(newName)"),
+                ("private\\s\(variable.type.rawValue)\\s\(variable.name)\\b", "private \(variable.type.rawValue) \(newName)"),
+                ("fileprivate\\s\(variable.type.rawValue)\\s\(variable.name)\\b", "fileprivate \(variable.type.rawValue) \(newName)"),
                 ("\\bself\\.\(variable.name)\\b", "self.\(newName)"),
                 ("self\\?\\.\(variable.name)\\b", "self?.\(newName)")
             ]
