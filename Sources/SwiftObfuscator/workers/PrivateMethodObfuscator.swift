@@ -12,8 +12,14 @@ struct PrivateMethod: Hashable {
     let name: String
 }
 
-enum PrivateMethodObfuscator {
-    static func obfuscate(swiftFile: SwiftFile) {
+class PrivateMethodObfuscator {
+    var generateName: (String) -> String
+
+    init(generateName: @escaping (String) -> String) {
+        self.generateName = generateName
+    }
+
+    func obfuscate(swiftFile: SwiftFile) {
         var mapping: [PrivateMethod: String] = [:]
 
         let pattern = "(private|fileprivate)+\\sfunc\\s[a-zA-Z0-9_]+\\("
@@ -32,7 +38,7 @@ enum PrivateMethodObfuscator {
             }
             let method = PrivateMethod(type: type, name: name)
             if mapping.keys.contains(method).not {
-                mapping[method] = self.makeName(currentName: name)
+                mapping[method] = self.generateName(name)
             }
         }
 
@@ -52,9 +58,5 @@ enum PrivateMethodObfuscator {
                 swiftFile.content = regex.stringByReplacingMatches(in: swiftFile.content, range: range, withTemplate: rule.replacement)
             }
         }
-    }
-
-    private static func makeName(currentName: String) -> String {
-        "malloc0x".appendingRandomHexDigits(length: 12)
     }
 }

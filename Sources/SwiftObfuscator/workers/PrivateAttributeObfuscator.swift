@@ -17,8 +17,14 @@ struct PrivateVariable: Hashable {
     let name: String
 }
 
-enum PrivateAttributeObfuscator {
-    static func obfuscate(swiftFile: SwiftFile) {
+class PrivateAttributeObfuscator {
+    let generateName: (String) -> String
+    
+    init(generateName: @escaping (String) -> String) {
+        self.generateName = generateName
+    }
+
+    func obfuscate(swiftFile: SwiftFile) {
         let txt = swiftFile.content
         let range = NSRange(location: 0, length: txt.utf16.count)
 
@@ -40,7 +46,7 @@ enum PrivateAttributeObfuscator {
             }
             let variable = PrivateVariable(type: variableType, name: name)
             if mapping.keys.contains(variable).not {
-                mapping[variable] = self.makeName(currentName: name)
+                mapping[variable] = self.generateName(name)
             }
         }
         for (variable, newName) in mapping {
@@ -58,9 +64,5 @@ enum PrivateAttributeObfuscator {
                 swiftFile.content = regex.stringByReplacingMatches(in: swiftFile.content, range: range, withTemplate: rule.replacement)
             }
         }
-    }
-
-    private static func makeName(currentName: String) -> String {
-        (currentName.hasPrefix("_") ? "_" : "") + "pointer0x".appendingRandomHexDigits(length: 12)
     }
 }
