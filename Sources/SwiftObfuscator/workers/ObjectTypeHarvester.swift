@@ -32,7 +32,14 @@ struct NamedType: Equatable, Hashable {
     }
 }
 
+extension NamedType: CustomStringConvertible {
+    var description: String {
+        "\(self.flavor) \(self.name) with modifiers: \(self.modifiers.map{ $0.rawValue })"
+    }
+}
+
 struct ObjectTypeHarvester {
+    private static let logTag = "🦧 ObjectTypeHarvester"
     static func getObjectTypes(fileContent txt: String) -> [NamedType] {
         var foundTypes: [NamedType] = []
         let range = NSRange(location: 0, length: txt.utf16.count)
@@ -51,7 +58,9 @@ struct ObjectTypeHarvester {
                     .components(separatedBy: .whitespacesAndNewlines)
                     .compactMap { ObjectTypeModifier(rawValue: $0) }
                 let name = splitted[1].trimmingCharacters(in: .whitespacesAndNewlines)
-                foundTypes.append(NamedType(flavor: flavor, name: name, modifiers: usedMofifiers))
+                let namedType = NamedType(flavor: flavor, name: name, modifiers: usedMofifiers)
+                foundTypes.append(namedType)
+                Logger.v(Self.logTag, "Found \(namedType)")
             }
         }
 
