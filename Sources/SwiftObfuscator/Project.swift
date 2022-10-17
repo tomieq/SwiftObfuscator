@@ -11,14 +11,32 @@ public class Project {
     let absolutePath: String
     let projectFiles: ProjectFiles
     private(set) var mapping: [NamedType: String] = [:]
+    private var excludedFilePaths: [String]
 
     public init(absolutePath: String) {
         self.absolutePath = absolutePath
         self.projectFiles = ProjectFileLoader.loadFiles(from: absolutePath)
+        self.excludedFilePaths = []
     }
 
+    public func addExcludedPath(_ path: String) {
+        self.excludedFilePaths.append(path)
+    }
+    
+    private func isFileExcluded(filePath: String) -> Bool {
+        for excludedPath in self.excludedFilePaths {
+            if filePath.contains(excludedPath) {
+                return true
+            }
+        }
+        return false
+    }
+    
     public func removeComments() {
         for file in self.projectFiles.swiftFiles {
+            if self.isFileExcluded(filePath: file.filePath) {
+                continue
+            }
             autoreleasepool {
                 file.content = CommentRemover.removeComments(file.content)
             }
@@ -27,6 +45,9 @@ public class Project {
 
     public func obfuscateObjectTypeNames(untouchableTypeNames: [String]) {
         for file in self.projectFiles.swiftFiles {
+            if self.isFileExcluded(filePath: file.filePath) {
+                continue
+            }
             autoreleasepool {
                 let types = ObjectTypeHarvester.getObjectTypes(fileContent: file.content)
                 for type in types {
@@ -34,7 +55,7 @@ public class Project {
                        self.mapping.keys.contains(type).not,
                        untouchableTypeNames.contains(type.name).not {
                         let replacement = self.makeObjectTypeName(type.name)
-                        mapping[type] = replacement
+                        self.mapping[type] = replacement
                     }
                 }
             }
@@ -51,6 +72,9 @@ public class Project {
 
     public func obfuscatePrivateAttributes() {
         for file in self.projectFiles.swiftFiles {
+            if self.isFileExcluded(filePath: file.filePath) {
+                continue
+            }
             autoreleasepool {
                 PrivateAttributeObfuscator.obfuscate(swiftFile: file)
             }
@@ -59,6 +83,9 @@ public class Project {
 
     public func obfuscatePrivateMethods() {
         for file in self.projectFiles.swiftFiles {
+            if self.isFileExcluded(filePath: file.filePath) {
+                continue
+            }
             autoreleasepool {
                 PrivateMethodObfuscator.obfuscate(swiftFile: file)
             }
