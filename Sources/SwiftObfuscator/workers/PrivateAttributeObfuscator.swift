@@ -54,6 +54,7 @@ class PrivateAttributeObfuscator {
                 ("private\\s\(variable.type.rawValue)\\s\(variable.name)\\b", "private \(variable.type.rawValue) \(newName)"),
                 ("fileprivate\\s\(variable.type.rawValue)\\s\(variable.name)\\b", "fileprivate \(variable.type.rawValue) \(newName)"),
                 ("\\bself\\.\(variable.name)\\b", "self.\(newName)"),
+                ("self\\!\\.\(variable.name)\\b", "self!.\(newName)"),
                 ("self\\?\\.\(variable.name)\\b", "self?.\(newName)")
             ]
             for rule in rules {

@@ -12,7 +12,7 @@ import XCTest
 class ObjectTypeHarvesterTests: XCTestCase {
     func testFindClassDefinition() {
         let content = """
-            public final a class User: Human {}
+            public final class User: Human {}
             class Dog {}
         """
         let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
@@ -184,5 +184,17 @@ class ObjectTypeHarvesterTests: XCTestCase {
         XCTAssertEqual(objectTypes.count, 2)
         XCTAssertTrue(objectTypes.contains(NamedType(flavor: .class, name: "API", modifiers: [.final, .public])))
         XCTAssertTrue(objectTypes.contains(NamedType(flavor: .class, name: "URLFetcher", modifiers: [.public, .final])))
+    }
+
+    func testFindClassDefinitionWithFunction() {
+        let content = """
+        class Obfuscator {
+            func execute() {
+            }
+        }
+        """
+        let objectTypes = ObjectTypeHarvester.getObjectTypes(fileContent: content)
+        XCTAssertEqual(objectTypes[safeIndex: 0]?.flavor, .class)
+        XCTAssertEqual(objectTypes[safeIndex: 0]?.name, "Obfuscator")
     }
 }

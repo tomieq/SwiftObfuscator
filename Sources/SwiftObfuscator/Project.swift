@@ -13,7 +13,7 @@ public class Project {
     let projectFiles: ProjectFiles
     private(set) var mapping: [NamedType: String] = [:]
     private var excludedFilePaths: [String]
-    
+
     var generateTypeName: (String) -> String
     var generatePrivateAttributeName: (String) -> String
     var generatePrivateFunctionName: (String) -> String
@@ -22,7 +22,7 @@ public class Project {
         self.absolutePath = absolutePath
         self.projectFiles = ProjectFileLoader.loadFiles(from: absolutePath)
         self.excludedFilePaths = []
-        
+
         let nameGenerator = ObfuscatedNameGenerator()
         self.generateTypeName = nameGenerator.generateTypeName(currentName:)
         self.generatePrivateAttributeName = nameGenerator.generatePrivateAttributeName(currentName:)
