@@ -1,16 +1,16 @@
 //
-//  ObfuscatedNameGenerator.swift
+//  RandomNameGenerator.swift
 //
 //
-//  Created by Tomasz KUCHARSKI on 17/10/2022.
+//  Created by Tomasz KUCHARSKI on 23/11/2022.
 //
 
 import Foundation
 
-class ObfuscatedNameGenerator {
-    private var mapping: [NamedType: String] = [:]
+public class RandomNameGenerator {
+    private var mapping: [String: String] = [:]
 
-    func generateTypeName(currentName: String) -> String {
+    public func generateTypeName(currentName: String) -> String {
         let getNextName: () -> String = {
             "MemorySpace0x".appendingRandomHexDigits(length: 12)
         }
@@ -18,17 +18,18 @@ class ObfuscatedNameGenerator {
         while self.mapping.values.contains(name) {
             name = getNextName()
         }
+        self.mapping[currentName] = name
         return name
     }
 
-    func generatePrivateAttributeName(currentName: String) -> String {
+    public func generatePrivateAttributeName(currentName: String) -> String {
         if currentName.hasPrefix("_") {
             return "_" + "pointer0x".appendingRandomHexDigits(length: 12)
         }
         return "pointer0x".appendingRandomHexDigits(length: 12)
     }
 
-    func generatePrivateFunctionName(currentName: String) -> String {
+    public func generatePrivateFunctionName(currentName: String) -> String {
         "malloc0x".appendingRandomHexDigits(length: 12)
     }
 }

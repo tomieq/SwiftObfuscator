@@ -188,7 +188,7 @@ class ObjectTypeHarvesterTests: XCTestCase {
 
     func testFindClassDefinitionWithFunction() {
         let content = """
-        class Obfuscator {
+        public class Obfuscator {
             func execute() {
             }
         }

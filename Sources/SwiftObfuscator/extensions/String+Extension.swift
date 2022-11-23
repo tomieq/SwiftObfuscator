@@ -49,3 +49,23 @@ extension String {
         return self.appending(digits)
     }
 }
+
+extension String {
+    var bytes: [UInt8] {
+        return [UInt8](self.utf8)
+    }
+}
+
+extension String {
+    public func subString(_ from: Int, _ to: Int) -> String {
+        if self.count < to {
+            return self
+        }
+
+        let start = self.index(self.startIndex, offsetBy: from)
+        let end = self.index(self.startIndex, offsetBy: to)
+
+        let range = start..<end
+        return String(self[range])
+    }
+}

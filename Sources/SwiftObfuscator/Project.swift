@@ -23,7 +23,7 @@ public class Project {
         self.projectFiles = ProjectFileLoader.loadFiles(from: absolutePath)
         self.excludedFilePaths = []
 
-        let nameGenerator = ObfuscatedNameGenerator()
+        let nameGenerator = ConstantNameGenerator()
         self.generateTypeName = nameGenerator.generateTypeName(currentName:)
         self.generatePrivateAttributeName = nameGenerator.generatePrivateAttributeName(currentName:)
         self.generatePrivateFunctionName = nameGenerator.generatePrivateFunctionName(currentName:)
