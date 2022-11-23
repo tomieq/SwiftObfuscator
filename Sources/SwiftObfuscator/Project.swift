@@ -12,7 +12,8 @@ public class Project {
     let absolutePath: String
     let projectFiles: ProjectFiles
     private(set) var mapping: [NamedType: String] = [:]
-    private var excludedFilePaths: [String]
+    private var excludedFolders: [String]
+    private var excludedFileNames: [String]
 
     var generateTypeName: (String) -> String
     var generatePrivateAttributeName: (String) -> String
@@ -21,7 +22,8 @@ public class Project {
     public init(absolutePath: String) {
         self.absolutePath = absolutePath
         self.projectFiles = ProjectFileLoader.loadFiles(from: absolutePath)
-        self.excludedFilePaths = []
+        self.excludedFolders = []
+        self.excludedFileNames = []
 
         let nameGenerator = ConstantNameGenerator()
         self.generateTypeName = nameGenerator.generateTypeName(currentName:)
@@ -31,15 +33,27 @@ public class Project {
         Logger.v(self.logTag, "Loaded \(self.projectFiles.swiftFiles.count) swift files")
     }
 
-    public func addExcludedPath(_ path: String) {
+    public func excludeFolder(_ path: String) {
         let path = path.trimmingCharacters(in: CharacterSet(charactersIn: "/")) + "/"
-        self.excludedFilePaths.append(path)
-        Logger.v(self.logTag, "Added exclusion path: \(path)")
+        self.excludedFolders.append(path)
+        Logger.v(self.logTag, "Added excluded folder: \(path)")
+    }
+
+    public func excludeFile(filename: String) {
+        let filename = filename.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        self.excludedFileNames.append(filename)
+        Logger.v(self.logTag, "Added excluded filename: \(filename)")
     }
 
     private func isFileExcluded(filePath: String) -> Bool {
-        for excludedPath in self.excludedFilePaths {
+        for excludedPath in self.excludedFolders {
             if filePath.hasPrefix(excludedPath) {
+                return true
+            }
+        }
+        for excludedFile in self.excludedFileNames {
+            let components = filePath.split(separator: "/")
+            if let name = components.last, excludedFile == "\(name)" {
                 return true
             }
         }
@@ -60,6 +74,7 @@ public class Project {
 
     public func obfuscateObjectTypeNames(untouchableTypeNames: [String]) {
         Logger.v(self.logTag, "Obfuscating type names")
+        let swiftProtectedNames = ["CodingKeys"]
         for file in self.projectFiles.swiftFiles {
             if self.isFileExcluded(filePath: file.filePath) {
                 Logger.v(self.logTag, "Skip file \(file.filePath)")
@@ -71,6 +86,7 @@ public class Project {
                 for type in types {
                     if type.isPublic.not,
                        self.mapping.keys.contains(type).not,
+                       swiftProtectedNames.contains(type.name).not,
                        untouchableTypeNames.contains(type.name).not {
                         let replacement = self.generateTypeName(type.name)
                         self.mapping[type] = replacement
