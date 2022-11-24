@@ -14,6 +14,11 @@ public class Project {
     private(set) var mapping: [NamedType: String] = [:]
     // private attribute mapping by path
     private var privateAttributes: [String: [PrivateVariable: String]] = [:]
+    // private method mapping by path
+    private var privateMethods: [String: [PrivateMethod: String]] = [:]
+    // object type mapping by path
+    private var objectTypes: [String: [NamedType: String]] = [:]
+
     private var excludedFolders: [String]
     private var excludedFileNames: [String]
 
@@ -92,6 +97,7 @@ public class Project {
                        untouchableTypeNames.contains(type.name).not {
                         let replacement = self.generateTypeName(type.name)
                         self.mapping[type] = replacement
+                        self.objectTypes[file.filePath, default: [:]][type] = replacement
                         Logger.v(self.logTag, "Type \(type.name) replaced with \(replacement)")
                     }
                 }
@@ -126,7 +132,7 @@ public class Project {
                 continue
             }
             autoreleasepool {
-                obfuscator.obfuscate(swiftFile: file)
+                self.privateMethods[file.filePath] = obfuscator.obfuscate(swiftFile: file)
             }
         }
     }
@@ -140,5 +146,46 @@ public class Project {
                 FileManager.default.createFile(atPath: newPath, contents: file.content.data(using: .utf8))
             }
         }
+    }
+
+    public var report: String {
+        let report = ObfuscationReport()
+
+        func getFileReport(_ file: String) -> FileReport {
+            var fileReport = report.files.first{ $0.file == file }
+            if fileReport.isNil {
+                fileReport = FileReport(file: file)
+                report.files.append(fileReport!)
+            }
+            return fileReport!
+        }
+
+        for (file, dictionary) in self.privateMethods {
+            let fileReport = getFileReport(file)
+            var privateMethods: [MappingItem] = []
+            for (method, newName) in dictionary {
+                privateMethods.append(MappingItem(originalName: method.name, obfuscatedName: newName))
+            }
+            fileReport.privateMethods = privateMethods
+        }
+
+        for (file, dictionary) in self.privateAttributes {
+            let fileReport = getFileReport(file)
+            var privateAttributes: [MappingItem] = []
+            for (attribute, newName) in dictionary {
+                privateAttributes.append(MappingItem(originalName: attribute.name, obfuscatedName: newName))
+            }
+            fileReport.privateAttributes = privateAttributes
+        }
+
+        for (file, dictionary) in self.objectTypes {
+            let fileReport = getFileReport(file)
+            var objectTypes: [MappingItem] = []
+            for (namedType, newName) in dictionary {
+                objectTypes.append(MappingItem(originalName: namedType.name, obfuscatedName: newName))
+            }
+            fileReport.objects = objectTypes
+        }
+        return report.json
     }
 }
