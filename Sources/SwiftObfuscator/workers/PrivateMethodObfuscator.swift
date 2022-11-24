@@ -20,13 +20,13 @@ class PrivateMethodObfuscator {
         self.generateName = generateName
     }
 
-    func obfuscate(swiftFile: SwiftFile) {
+    func obfuscate(swiftFile: SwiftFile) -> [PrivateMethod: String] {
         var mapping: [PrivateMethod: String] = [:]
 
         let pattern = "(private|fileprivate)+\\sfunc\\s[a-zA-Z0-9_]+\\("
         guard let regex = try? NSRegularExpression(pattern: pattern) else {
             Logger.e(self.logTag, "Invalid regular expression \(pattern)")
-            return
+            return mapping
         }
         let range = NSRange(location: 0, length: swiftFile.content.utf16.count)
         let matches = regex.matches(in: swiftFile.content, options: [], range: range)
@@ -61,5 +61,6 @@ class PrivateMethodObfuscator {
             }
             print("Renamed private method \(method.name) into \(newName) in file \(swiftFile.filename)")
         }
+        return mapping
     }
 }
