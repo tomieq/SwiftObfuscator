@@ -1,6 +1,6 @@
 //
 //  Int+Extension.swift
-//  
+//
 //
 //  Created by Tomasz KUCHARSKI on 23/11/2022.
 //

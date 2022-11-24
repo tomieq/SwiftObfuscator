@@ -12,7 +12,7 @@ public class RandomNameGenerator {
 
     public func generateTypeName(currentName: String) -> String {
         let getNextName: () -> String = {
-            "MemorySpace0x".appendingRandomHexDigits(length: 12)
+            "Memory0x".appendingRandomHexDigits(length: 12)
         }
         var name = getNextName()
         while self.mapping.values.contains(name) {

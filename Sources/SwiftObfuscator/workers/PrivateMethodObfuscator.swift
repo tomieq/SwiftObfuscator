@@ -13,6 +13,7 @@ struct PrivateMethod: Hashable {
 }
 
 class PrivateMethodObfuscator {
+    private let logTag = "🐢 PrivateMethodObfuscator"
     var generateName: (String) -> String
 
     init(generateName: @escaping (String) -> String) {
@@ -24,7 +25,7 @@ class PrivateMethodObfuscator {
 
         let pattern = "(private|fileprivate)+\\sfunc\\s[a-zA-Z0-9_]+\\("
         guard let regex = try? NSRegularExpression(pattern: pattern) else {
-            print("Invalid regular expression \(pattern)")
+            Logger.e(self.logTag, "Invalid regular expression \(pattern)")
             return
         }
         let range = NSRange(location: 0, length: swiftFile.content.utf16.count)
@@ -43,6 +44,7 @@ class PrivateMethodObfuscator {
         }
 
         for (method, newName) in mapping {
+            Logger.v(self.logTag, "Method \(method.name) replaced with \(newName) in \(swiftFile.filename)")
             let rules: [(pattern: String, replacement: String)] = [
                 ("\\b\(method.type)\\sfunc\\s\(method.name)\\(", "\(method.type) func \(newName)("),
                 ("\\bself\\.\(method.name)\\b", "self.\(newName)"),
@@ -57,6 +59,7 @@ class PrivateMethodObfuscator {
                 let range = NSRange(location: 0, length: swiftFile.content.utf16.count)
                 swiftFile.content = regex.stringByReplacingMatches(in: swiftFile.content, range: range, withTemplate: rule.replacement)
             }
+            print("Renamed private method \(method.name) into \(newName) in file \(swiftFile.filename)")
         }
     }
 }

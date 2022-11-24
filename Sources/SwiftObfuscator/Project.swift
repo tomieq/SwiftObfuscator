@@ -90,7 +90,7 @@ public class Project {
                        untouchableTypeNames.contains(type.name).not {
                         let replacement = self.generateTypeName(type.name)
                         self.mapping[type] = replacement
-                        Logger.v(self.logTag, "Type \(type.name) will be replaced with \(replacement)")
+                        Logger.v(self.logTag, "Type \(type.name) replaced with \(replacement)")
                     }
                 }
             }

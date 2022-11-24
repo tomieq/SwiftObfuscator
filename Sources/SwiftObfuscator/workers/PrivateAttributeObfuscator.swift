@@ -18,6 +18,7 @@ struct PrivateVariable: Hashable {
 }
 
 class PrivateAttributeObfuscator {
+    private let logTag = "🐇 PrivateAttributeObfuscator"
     let generateName: (String) -> String
 
     init(generateName: @escaping (String) -> String) {
@@ -32,7 +33,7 @@ class PrivateAttributeObfuscator {
 
         let pattern = "\\b(private|fileprivate)+\\s(let|var)+\\s[a-zA-Z0-9_]+"
         guard let regex = try? NSRegularExpression(pattern: pattern) else {
-            print("Invalid regular expression")
+            Logger.e(self.logTag, "Invalid regular expression \(pattern)")
             return
         }
 
@@ -50,6 +51,7 @@ class PrivateAttributeObfuscator {
             }
         }
         for (variable, newName) in mapping {
+            Logger.v(self.logTag, "Attribute \(variable.name) replaced with \(newName) in \(swiftFile.filename)")
             let rules: [(pattern: String, replacement: String)] = [
                 ("private\\s\(variable.type.rawValue)\\s\(variable.name)\\b", "private \(variable.type.rawValue) \(newName)"),
                 ("fileprivate\\s\(variable.type.rawValue)\\s\(variable.name)\\b", "fileprivate \(variable.type.rawValue) \(newName)"),
