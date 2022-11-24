@@ -24,7 +24,7 @@ class PrivateAttributeObfuscatorTests: XCTestCase {
         }
         """
         let swiftFile = SwiftFile(filePath: "tmp.swift", content: code)
-        sut.obfuscate(swiftFile: swiftFile)
+        let report = sut.obfuscate(swiftFile: swiftFile)
 
         let obfuscated = """
         class Car {
@@ -36,6 +36,7 @@ class PrivateAttributeObfuscatorTests: XCTestCase {
         }
         """
         XCTAssertEqual(obfuscated, swiftFile.content)
+        XCTAssertEqual(report, [PrivateVariable(type: .let, name: "original"): "replaced"])
     }
 
     func test_obfuscateWeakPrivateAttribute() throws {
@@ -52,7 +53,7 @@ class PrivateAttributeObfuscatorTests: XCTestCase {
         }
         """
         let swiftFile = SwiftFile(filePath: "tmp.swift", content: code)
-        sut.obfuscate(swiftFile: swiftFile)
+        let report = sut.obfuscate(swiftFile: swiftFile)
 
         let obfuscated = """
         class Car {
@@ -64,6 +65,7 @@ class PrivateAttributeObfuscatorTests: XCTestCase {
         }
         """
         XCTAssertEqual(obfuscated, swiftFile.content)
+        XCTAssertEqual(report, [PrivateVariable(type: .let, name: "original"): "replaced"])
     }
 
     func test_obfuscateForceUnwrappedPrivateAttribute() throws {
@@ -80,7 +82,7 @@ class PrivateAttributeObfuscatorTests: XCTestCase {
         }
         """
         let swiftFile = SwiftFile(filePath: "tmp.swift", content: code)
-        sut.obfuscate(swiftFile: swiftFile)
+        let report = sut.obfuscate(swiftFile: swiftFile)
 
         let obfuscated = """
         class Car {
@@ -92,5 +94,6 @@ class PrivateAttributeObfuscatorTests: XCTestCase {
         }
         """
         XCTAssertEqual(obfuscated, swiftFile.content)
+        XCTAssertEqual(report, [PrivateVariable(type: .let, name: "original"): "replaced"])
     }
 }

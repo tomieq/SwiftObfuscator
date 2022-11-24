@@ -25,7 +25,7 @@ class PrivateAttributeObfuscator {
         self.generateName = generateName
     }
 
-    func obfuscate(swiftFile: SwiftFile) {
+    func obfuscate(swiftFile: SwiftFile) -> [PrivateVariable: String] {
         let txt = swiftFile.content
         let range = NSRange(location: 0, length: txt.utf16.count)
 
@@ -34,7 +34,7 @@ class PrivateAttributeObfuscator {
         let pattern = "\\b(private|fileprivate)+\\s(let|var)+\\s[a-zA-Z0-9_]+"
         guard let regex = try? NSRegularExpression(pattern: pattern) else {
             Logger.e(self.logTag, "Invalid regular expression \(pattern)")
-            return
+            return mapping
         }
 
         for result in regex.matches(in: txt, options: [], range: range) {
@@ -68,5 +68,6 @@ class PrivateAttributeObfuscator {
                 swiftFile.content = regex.stringByReplacingMatches(in: swiftFile.content, range: range, withTemplate: rule.replacement)
             }
         }
+        return mapping
     }
 }

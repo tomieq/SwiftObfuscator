@@ -12,6 +12,8 @@ public class Project {
     let absolutePath: String
     let projectFiles: ProjectFiles
     private(set) var mapping: [NamedType: String] = [:]
+    // private attribute mapping by path
+    private var privateAttributes: [String: [PrivateVariable: String]] = [:]
     private var excludedFolders: [String]
     private var excludedFileNames: [String]
 
@@ -112,7 +114,7 @@ public class Project {
                 continue
             }
             autoreleasepool {
-                obfuscator.obfuscate(swiftFile: file)
+                self.privateAttributes[file.filePath] = obfuscator.obfuscate(swiftFile: file)
             }
         }
     }
