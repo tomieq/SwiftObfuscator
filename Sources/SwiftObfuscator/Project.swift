@@ -137,6 +137,14 @@ public class Project {
         }
     }
 
+    public func applyCustomTransformation(_ transform: (_ filePath: String, _ content: String) -> String) {
+        for file in self.projectFiles.swiftFiles {
+            autoreleasepool {
+                file.content = transform(file.filePath, file.content)
+            }
+        }
+    }
+
     public func overrideFiles() {
         self.projectFiles.swiftFiles.forEach { file in
             autoreleasepool {
