@@ -48,6 +48,7 @@ class PrivateMethodObfuscator {
             let rules: [(pattern: String, replacement: String)] = [
                 ("\\b\(method.type)\\sfunc\\s\(method.name)\\(", "\(method.type) func \(newName)("),
                 ("\\bself\\.\(method.name)\\b", "self.\(newName)"),
+                ("\\bSelf\\.\(method.name)\\b", "Self.\(newName)"),
                 ("self\\?\\.\(method.name)\\b", "self?.\(newName)"),
                 ("\\#selector\\(\(method.name)\\(", "#selector(\(newName)(")
             ]
