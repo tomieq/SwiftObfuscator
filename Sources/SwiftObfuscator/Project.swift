@@ -112,6 +112,19 @@ public class Project {
             }
         }
     }
+    
+    public func addPrintMarker(excludedFunctions: [String]) {
+        let marker = FunctionMarker()
+        for file in self.projectFiles.swiftFiles {
+            print("Processing \(file.filename)")
+            if self.isFileExcluded(filePath: file.filePath) {
+                continue
+            }
+            autoreleasepool {
+                marker.addMarker("", swiftFile: file, excludedFunctions: excludedFunctions)
+            }
+        }
+    }
 
     public func obfuscatePrivateAttributes() {
         let obfuscator = PrivateAttributeObfuscator(generateName: self.generatePrivateAttributeName)
